@@ -39,3 +39,61 @@ resource "aws_s3_bucket_versioning" "code_storage" {
     status = "Disabled"
   }
 }
+
+data "aws_iam_policy_document" "functions_origin_access_policy" {
+  statement {
+    sid    = "AccessFromFunctionsOrigin"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = [
+      "${aws_s3_bucket.code_storage.arn}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::*:role/functions-origin-*"]
+    }
+
+    condition {
+      test     = "ForAnyValue:StringEquals"
+      variable = "aws:PrincipalOrgPaths"
+
+      values = [
+        "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-8ez0kkal/ou-jfxt-3rxyhrql/", # New Org > Root > Environments > Production > Services
+        "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-kfqgreg7/ou-jfxt-vd4cwr3w/", # New Org > Root > Environments > Staging > Services
+      ]
+    }
+  }
+
+  statement {
+    sid = "BucketOperations"
+    actions = [
+      "s3:ListBucket", # is a s3:GetObject returns a 404 the AWS SDK throws a PermissionDenied if this permission not granted
+    ]
+    resources = [ aws_s3_bucket.code_storage.arn ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::*:role/functions-origin-*"]
+    }
+
+    condition {
+      test     = "ForAnyValue:StringEquals"
+      variable = "aws:PrincipalOrgPaths"
+
+      values = [
+        "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-8ez0kkal/ou-jfxt-3rxyhrql/", # New Org > Root > Environments > Production > Services
+        "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-kfqgreg7/ou-jfxt-vd4cwr3w/", # New Org > Root > Environments > Staging > Services
+      ]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "code_storage" {
+  bucket = aws_s3_bucket.code_storage.id
+  policy = data.aws_iam_policy_document.functions_origin_access_policy.json
+}
