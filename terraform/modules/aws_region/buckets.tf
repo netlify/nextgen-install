@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "functions_origin_access_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::*:role/functions-origin-*"]
+      identifiers = ["*"]
     }
 
     condition {
@@ -66,6 +66,12 @@ data "aws_iam_policy_document" "functions_origin_access_policy" {
         "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-8ez0kkal/ou-jfxt-3rxyhrql/", # New Org > Root > Environments > Production > Services
         "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-kfqgreg7/ou-jfxt-vd4cwr3w/", # New Org > Root > Environments > Staging > Services
       ]
+    }
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "aws:PrincipalArn"
+
+      values = ["arn:aws:iam::*:role/functions-origin-*"]
     }
   }
 
@@ -78,7 +84,7 @@ data "aws_iam_policy_document" "functions_origin_access_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::*:role/functions-origin-*"]
+      identifiers = ["*"]
     }
 
     condition {
@@ -89,6 +95,12 @@ data "aws_iam_policy_document" "functions_origin_access_policy" {
         "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-8ez0kkal/ou-jfxt-3rxyhrql/", # New Org > Root > Environments > Production > Services
         "o-rgae2fihtd/r-jfxt/ou-jfxt-7ln5b5lm/ou-jfxt-kfqgreg7/ou-jfxt-vd4cwr3w/", # New Org > Root > Environments > Staging > Services
       ]
+    }
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "aws:PrincipalArn"
+
+      values = ["arn:aws:iam::*:role/functions-origin-*"]
     }
   }
 }
