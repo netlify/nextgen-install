@@ -1,9 +1,9 @@
 // Copyright Deno Land Inc. All Rights Reserved. Proprietary and confidential.
 
 resource "aws_acm_certificate" "cert" {
-  domain_name = var.domain_name
+  domain_name = "${var.domain_name}.${var.dns_zone}"
   subject_alternative_names = [
-    "*.${var.domain_name}",
+    "*.${var.domain_name}.${var.dns_zone}",
   ]
   validation_method = "DNS"
   lifecycle {

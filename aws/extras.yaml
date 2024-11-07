@@ -1,0 +1,32 @@
+provider: aws
+region: us-east-2
+cluster_name: deno-test
+hostname: deno-test.sandbox.nsvcs.net
+
+aws:
+  subnet: deno-test-subnet1
+  nlb: deno-test-nlb
+
+# Uncomment the following block to send logs to an OTLP endpoint.
+# otlp:
+#   endpoint: https://otlp-gateway-prod-us-east-0.grafana.net/otlp
+#   auth:
+#     authenticator: basicauth/otlp
+#     username: "103456"
+#     password: "ghc_xxx"
+
+controller:
+  serviceaccount_annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::171405876253:role/eks-service-account-20f34124
+  env:
+    - name: NODE_METRICS_SELECTOR
+      value: karpenter.sh/provisioner-name=default
+    - name: ESZIP_ORIGIN_SERVICE_NAME
+      value: netlify-origin-service
+
+proxy:
+  serviceaccount_annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::171405876253:role/eks-service-account-20f34124
+  env:
+    - name: ESZIP_ORIGIN_SERVICE_NAME
+      value: netlify-origin-service

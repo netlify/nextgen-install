@@ -10,9 +10,10 @@ terraform {
 }
 
 locals {
-  eks_cluster_name                         = "gargamel"
-  eks_cluster_region                       = "us-west-2"
-  domain_name                              = "gargamel.deno-cluster.net"
+  eks_cluster_name                         = "deno-test"
+  eks_cluster_region                       = "us-east-2"
+  domain_name                              = "deno-test"
+  dns_zone                                = "sandbox.nsvcs.net"
   enable_cluster_creator_admin_permissions = true
 }
 
@@ -23,6 +24,7 @@ module "aws_region" {
   eks_cluster_region                       = local.eks_cluster_region
   domain_name                              = local.domain_name
   enable_cluster_creator_admin_permissions = local.enable_cluster_creator_admin_permissions
+  dns_zone = "sandbox.nsvcs.net"
 }
 
 output "code_storage_bucket" {

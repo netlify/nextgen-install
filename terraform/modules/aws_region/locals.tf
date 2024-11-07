@@ -9,4 +9,5 @@ locals {
   eks_cluster_az1 = element(local.azs, 0)
   eks_cluster_az2 = element(local.azs, 1)
   short_uuid      = substr(random_uuid.this.result, 0, 8)
+  terraform_secrets_path = "~/netlify-secrets/aws.conf"
 }

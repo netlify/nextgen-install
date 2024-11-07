@@ -1,7 +1,11 @@
 // Copyright Deno Land Inc. All Rights Reserved. Proprietary and confidential.
 
-resource "aws_route53_zone" "domain_name" {
-  name = "${var.domain_name}."
+# resource "aws_route53_zone" "domain_name" {
+#   name = "${var.domain_name}."
+# }
+
+data "aws_route53_zone" "this" {
+  name = var.dns_zone
 }
 
 resource "aws_route53_record" "record_set1" {
@@ -17,7 +21,7 @@ resource "aws_route53_record" "record_set1" {
   name            = each.value.name
   records         = [each.value.record]
   type            = each.value.type
-  zone_id         = aws_route53_zone.domain_name.zone_id
+  zone_id         = data.aws_route53_zone.this.zone_id
 }
 
 data "aws_lb" "nlb" {
@@ -26,7 +30,7 @@ data "aws_lb" "nlb" {
 }
 
 resource "aws_route53_record" "apex_a_record" {
-  name = "${var.domain_name}."
+  name = "${var.domain_name}.${var.dns_zone}"
   type = "A"
 
   alias {
@@ -35,11 +39,11 @@ resource "aws_route53_record" "apex_a_record" {
     evaluate_target_health = true
   }
 
-  zone_id = aws_route53_zone.domain_name.zone_id
+  zone_id = data.aws_route53_zone.this.zone_id
 }
 
 resource "aws_route53_record" "wildcard_a_record" {
-  name = "*.${var.domain_name}."
+  name = "*.${var.domain_name}.${var.dns_zone}"
   type = "A"
 
   alias {
@@ -48,5 +52,5 @@ resource "aws_route53_record" "wildcard_a_record" {
     evaluate_target_health = false
   }
 
-  zone_id = aws_route53_zone.domain_name.zone_id
+  zone_id = data.aws_route53_zone.this.zone_id
 }

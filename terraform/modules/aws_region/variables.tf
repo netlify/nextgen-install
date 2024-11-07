@@ -8,6 +8,10 @@ variable "domain_name" {
   type = string
 }
 
+variable "dns_zone" {
+  type = string
+}
+
 variable "eks_cluster_region" {
   type = string
 }

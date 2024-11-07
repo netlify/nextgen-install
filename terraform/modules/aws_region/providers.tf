@@ -2,6 +2,8 @@
 
 provider "aws" {
   region = var.eks_cluster_region
+  profile = "admin-legacy-sandbox"
+  shared_credentials_files = ["${local.terraform_secrets_path}"]
 }
 
 data "aws_caller_identity" "this" {}
